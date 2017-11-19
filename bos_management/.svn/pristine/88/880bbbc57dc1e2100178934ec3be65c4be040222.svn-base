@@ -1,0 +1,79 @@
+package com.itheima.web.action.system;
+
+
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+
+import com.itheima.domain.system.Menu;
+import com.itheima.domain.system.User;
+import com.itheima.service.system.MenuService;
+import com.itheima.web.action.base.CommonAction;
+
+
+/**  
+ * ClassName:MenuAction <br/>  
+ * Function:  <br/>  
+ * Date:     2017年11月16日 下午6:36:51 <br/>       
+ */
+
+@Controller
+@Namespace("/")
+@ParentPackage("struts-default")
+@Scope("prototype")
+public class MenuAction extends CommonAction<Menu>  {
+    public MenuAction() {
+        super(Menu.class);  
+    }
+    
+    @Autowired
+    private MenuService menuService;
+    
+    @Action(value="menuAction_pageQuery")
+    public String pageQuery() throws Exception{
+        int page=Integer.parseInt(getModel().getPage())-1;
+        Pageable pageable = new PageRequest(page, rows);
+        Page page1 = menuService.pageQuery(pageable);
+        page2json(page1, new String[] {"roles","childrenMenus","parentMenu"});
+        return NONE;
+    }
+    
+    @Action(value="menuAction_findAll")
+    public String findAll() throws Exception{
+        List<Menu> list = menuService.findAllLeverOne();
+        list2json(list, new String[] {"roles","childrenMenus","parentMenu"});
+        return NONE;
+    }
+    
+    @Action(value="menuAction_findByUser")
+    public String findByUser() throws Exception{
+        User user= (User) SecurityUtils.getSubject().getPrincipal();
+        List<Menu> list = menuService.findByUser(user);
+        list2json(list, new String[] {"roles","childrenMenus","parentMenu"});
+        return NONE;
+    }
+    
+    @Action(value="menuAction_save", results ={@Result(name="success" ,
+            location="/pages/system/menu.html" ,type="redirect" )})
+    public String save() throws Exception{
+        menuService.save(getModel());
+        return SUCCESS;
+    }
+    
+    
+    
+    
+    
+
+}
+  

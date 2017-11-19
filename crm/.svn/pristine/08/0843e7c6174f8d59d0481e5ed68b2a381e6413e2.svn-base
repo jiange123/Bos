@@ -1,0 +1,50 @@
+package com.itheima.crm.service;
+
+import java.util.List;
+
+import javax.print.attribute.standard.Media;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
+import com.itheima.crm.domain.Customer;
+
+/**  
+ * ClassName:CustomerService <br/>  
+ * Function:  <br/>  
+ * Date:     2017年11月6日 上午9:41:34 <br/>       
+ */
+
+public interface CustomerService {
+    
+    @GET
+    @Path("/findAll")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Customer> findAll();
+    
+    @GET
+    @Path("/findCustomerByNull")
+   // @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Customer> findCustomerByNull();
+    
+    @GET
+    @Path("/findCustomerById")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Customer> findCustomerById(@QueryParam("cid") String id);
+    
+    @PUT
+    @Path("/assignCustomers2FixedArea")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void assignCustomers2FixedArea(
+            @QueryParam("fid") String fid, 
+            @QueryParam("customerIds") List<Long> customerIds);
+    
+}
+  
